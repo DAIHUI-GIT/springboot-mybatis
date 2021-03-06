@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.springboot.mybatis.mapper.LogMapper">
+    <resultMap id="Logs" type="Log">
+        <!-- column对应字段别名，property对应实体属性名-->
+        <result column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="description" property="description" />
+        <result column="operation_time" property="operationTime" />
+        <association property="operator" column="operator_id" javaType="com.example.springboot.mybatis.entity.User" >
+            <id column="operator_id" property="id" />
+            <result column="name" property="name" />
+            <result column="account" property="account" />
+            <result column="password" property="password" />
+            <result column="create_time" property="createTime" />
+            <result column="disabled" property="disabled" />
+        </association>
+    </resultMap>
+    <insert id="insert" parameterType="Log" >
+        insert into
+        Log(
+        id,
+        title,
+        description,
+        operation_time,
+        operator_id
+        )
+        values (
+        #{id},
+        #{title},
+        #{description},
+        #{operationTime},
+        #{operator.id}
+        )
+    </insert>
+    <select id="get" resultMap="Logs">
+        select
+        t.id as id,
+        t.title as title,
+        t.description as description,
+        t.operation_time as operation_time,
+        t.operator_id as operator_id,
+        t1.name as name,
+        t1.account as account,
+        t1.password as password,
+        t1.create_time as create_time,
+        t1.disabled as disabled
+        from
+        Log t
+        left join User t1
+        on t.operator_id = t1.id
+    </select>
+</mapper>
